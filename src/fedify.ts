@@ -1,5 +1,5 @@
 import type { Federation } from "@fedify/fedify";
-import type { Elysia, Context } from "elysia";
+import type { Elysia } from "elysia";
 
 export type ContextDataFactory<TContextData> = () =>
 	| TContextData
@@ -12,8 +12,7 @@ export const fedify = <TContextData = unknown>(
 	return (app: Elysia) =>
 		app
 			.decorate("federation", federation)
-			.onRequest(async (context) => {
-				const { request, set } = context;
+			.onRequest(async ({ request, set, federation }) => {
 				let notFound = false;
 				let notAcceptable = false;
 

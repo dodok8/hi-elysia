@@ -141,7 +141,7 @@ const app = new Elysia()
 	// Elysia automatically handles proxy headers when behind a reverse proxy
 	// No need for explicit "trust proxy" setting
 
-	.use(fedify(federation))
+	.use(fedify(federation, () => undefined))
 	.get("/", ({ request, set }) => {
 		// Set content type
 		set.headers["Content-Type"] = "text/plain";
