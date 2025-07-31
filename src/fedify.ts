@@ -1,15 +1,13 @@
 import type { Federation } from "@fedify/fedify";
-import type { Elysia } from "elysia";
+import type { Elysia, Context } from "elysia";
 
-export type ContextDataFactory<TContextData> = (context: {
-	request: Request;
-	set: any;
-	[key: string]: any;
-}) => TContextData | Promise<TContextData>;
+export type ContextDataFactory<TContextData> = () =>
+	| TContextData
+	| Promise<TContextData>;
 
 export const fedify = <TContextData = unknown>(
 	federation: Federation<TContextData>,
-	contextDataFactory?: ContextDataFactory<TContextData>,
+	contextDataFactory: ContextDataFactory<TContextData>,
 ) => {
 	return (app: Elysia) =>
 		app
@@ -20,9 +18,7 @@ export const fedify = <TContextData = unknown>(
 				let notAcceptable = false;
 
 				// Create context data using the factory or default to empty object
-				const contextData = contextDataFactory
-					? await contextDataFactory(context)
-					: ({} as TContextData);
+				const contextData = await contextDataFactory();
 
 				const response = await federation.fetch(request, {
 					contextData,
